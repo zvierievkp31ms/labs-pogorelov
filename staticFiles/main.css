@@ -1,0 +1,62 @@
+body {
+    background: #CCEBEE;
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.container_v {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container_g {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.box {
+    background-color: #9fb7c8;
+    margin: 10px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 10px; 
+}
+
+textarea {
+    width: 190px;
+    height: 100px;
+    resize: none;
+    margin-right: 20px;
+}
+
+button {
+    width: 80px;
+    padding: 10px;
+    background-color: #adaabf;
+    color: #fff;
+    border: 1px solid #2980b9;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+input {
+    width: 200px;
+    padding: 8px; /* Adjust padding as needed */
+    background-color: #ecf0f1; /* Replace with your desired color */
+    color: #333; /* Text color */
+    border: 1px solid #bdc3c7; /* Border color */
+    border-radius: 5px; /* Border radius for rounded corners */
+    box-sizing: border-box; /* Include padding and border in the total width/height */
+    margin-right: 20px;
+}
