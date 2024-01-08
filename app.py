@@ -5,13 +5,15 @@ from flask import Flask, render_template, request, send_file
 
 from query import query_index
 from indexfile import index_file
-
+import os
 
 app = Flask(__name__, template_folder='templates', static_folder='staticFiles')
 
 @app.route('/')
 def index():
-    return render_template('index.html'), 200
+    dir_options =[]
+    index_options=[]
+    return render_template('index.html', dir_options=dir_options, index_options=index_options), 200
 
 @app.route('/query', methods=['GET'])
 def search():
@@ -28,40 +30,15 @@ def search():
     except:
         return f"Error: The application cannot process this request, please check the data entered.", 400
 
-@app.route('/upload', methods=['POST'])
-def upload_files():
+@app.route('/input', methods=['POST'])
+def input_part():
     try:
-        files = request.files.getlist('file')
-        if not files:
-            return 'No files selected', 400
-
-        res_files = {}
-        for file in files:
-            filename = file.filename
-            content = file.read().decode('UTF-8')
-            res_files[filename] = content
-        
-        index_file(res_files)
-        file_paths = ['index', 'filenames']
-        zip_filename = 'index_filenames.zip'
-        with ZipFile(zip_filename, 'w') as zip_file:
-            for file_path in file_paths:
-                zip_file.write(file_path, arcname=os.path.basename(file_path))
-        return send_file(zip_filename, as_attachment=True), 200
-    except:
-        return f"Error: The application cannot process this request, please check the data entered.", 400
-    
-
-@app.route('/index_filenames', methods=['POST'])
-def upload_config_files():
-    try:
-        files = request.files.getlist('file')
-        if not files:
-            return 'No files selected', 400
-
-        for file in files:
-            with open(file.filename, 'w', encoding='utf-8') as new_file:
-                json.dump(json.loads(file.read().decode('UTF-8')), new_file, indent=2)
+        data = request.get_json()
+        index_filename = data['index']
+        filenames_filename = data['filenames']
+        dir_name = data['dir']
+        files = os.listdir(dir_name)
+        index_file(files, index_filename, filenames_filename)
         return 'changes applied', 200
     except:
         return f"Error: The application cannot process this request, please check the data entered.", 400
