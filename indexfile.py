@@ -3,7 +3,8 @@ import string
 from linked_list import LinkedList
 
 def remove_punctuation(word):
-    return word
+    word = word.strip(string.punctuation)
+    return word.lower()
 
 def index_file(files):
     wordList = LinkedList(len(files))
