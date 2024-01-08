@@ -14,37 +14,45 @@ class TestFlaskApp(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_set_file_for_indexing(self):
-        data = dict(file=(BytesIO(b'my file contents'), "work_order.123"))
-        response = self.app.post('/upload', content_type='multipart/form-data', data=data)
+    def test_set_file_dir_for_indexing(self):
+        data = {
+            'dir':'art',
+            'filenames': 'filenames',
+            'index':'index'
+        }
+        response = self.app.post('/input', content_type='application/json', data=data)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(b'changes applied', response.data)
     
-    def test_set_index_file(self):
-        data = dict(file=(BytesIO(b'{"asd": [1],"word": [2]}'), "index"))
-        response = self.app.post('/index_filenames', content_type='multipart/form-data', data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(b'changes applied', response.data)
-
-    def test_set_filename_file(self):
-        data = dict(file=(BytesIO(b'["file_2.txt"]'), "filenames"))
-        response = self.app.post('/index_filenames', content_type='multipart/form-data', data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(b'changes applied', response.data)
+    def test_set_bad_file_dir_for_indexing(self):
+        data = {
+            'dir':'',
+            'filenames': 'filenames',
+            'index':''
+        }
+        response = self.app.post('/input', content_type='application/json', data=data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(b'Error: The application cannot process this request, please check the data entered.', response.data)
 
     def test_empty_query(self):
         response = self.app.get('/query')
         self.assertEqual(response.status_code, 400)
         self.assertIn(b'Error: The application cannot process this request, please check the data entered.', response.data)        
     
+    def test_not_full_query(self):
+        response = self.app.get('/query?value=time&index=index&filenames=')
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(b'The word "time" is not found in any of the indexed files.', response.data)        
+    
     def test_query_with_not_exist_value(self):
-        response = self.app.get('/query?value=time')
+        response = self.app.get('/query?value=time1')
         self.assertEqual(response.status_code, 404)
         self.assertIn(b'The word "time" is not found in any of the indexed files.', response.data)        
     
     def test_query_with_value(self):
-        response = self.app.get('/query?value=asd')
+        response = self.app.get('/query?value=air&index=index&filenames=filenames')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'1 file_2.txt\n', response.data)        
+        self.assertIn(b'1 art_file_1.txt\n', response.data)        
     
 if __name__ == "__main__":
     unittest.main()
