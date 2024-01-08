@@ -1,4 +1,8 @@
-from flask import Flask, render_template, request
+import os
+import json
+from zipfile import ZipFile
+from flask import Flask, render_template, request, send_file
+
 from query import query_index
 from indexfile import index_file
 import os
@@ -15,7 +19,14 @@ def index():
 def search():
     try:
         word = request.args.get('value')
-        return query_index(word, '', '')
+        with open('index', 'r', encoding='utf-8') as index_file:
+            index = json.load(index_file)
+        with open('filenames', 'r', encoding='utf-8') as filenames_file:
+            filenames = json.load(filenames_file)
+        return query_index(word, index, filenames)
+
+    except json.JSONDecodeError:
+        return f"Error: JSON files index or filenames decoding problem.", 400
     except:
         return f"Error: The application cannot process this request, please check the data entered.", 400
 
