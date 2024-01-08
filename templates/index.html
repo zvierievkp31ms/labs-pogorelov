@@ -14,19 +14,6 @@
         <div class="box">
             <div class="container_g">
                 <div>
-                    <h3>File Uploader</h3>
-                    <input id="indexed_file" type="file" onchange="selectFiles()" name="file" multiple>
-                </div>
-                <textarea id="inputFilesTextarea" name="myTextarea" disabled></textarea>
-                <div class="container_v">
-                    <button onclick="clearFiles()" style="background-color: #ceb5a7;">Clear</button>
-                    <button id="uploadFiles" onclick="uploadFiles()" id="uploadIndexedFiles" disabled>Load</button>
-                </div>
-            </div>
-        </div>
-        <div class="box">
-            <div class="container_g">
-                <div>
                     <h3>Select index file</h3>
                     <input id="index_file" type="file" onchange="selectIndexFilenames()" name="file">
                 </div>
@@ -35,7 +22,7 @@
                     <input id="filenames_file" type="file" onchange="selectIndexFilenames()" name="file" >
                 </div>
                 <div class="container_v">
-                    <button onclick="clearIndexFilenames()" style="background-color: #ceb5a7;">Clear</button>
+                    <button onclick="clearIndexFilenames()" style="background-color: #ceb5a7;">Load default</button>
                     <button id="uploadIndexFilenamesFiles" onclick="uploadIndexFilenames()" disabled>Load</button>
                 </div>
             </div>
