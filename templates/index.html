@@ -1,11 +1,10 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Button Action Example</title>
+    <title>Labs</title>
     <link rel="stylesheet" href='/staticFiles/main.css' />
 </head>
 
@@ -13,34 +12,75 @@
     <div class="container_v">
         <div class="box">
             <div class="container_g">
-                <div>
-                    <h3>Select index file</h3>
-                    <input id="index_file" type="file" onchange="selectIndexFilenames()" name="file">
-                </div>
-                <div>
-                    <h3>Select filenames file</h3>
-                    <input id="filenames_file" type="file" onchange="selectIndexFilenames()" name="file" >
+                <div class="container_v">
+                    <div>
+                        <h3>Select files dir</h3>
+                        <select id="dir" onchange="updateDirSelectInput()">
+                            {% for option in dir_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <textarea id="dir_files" style="height: 50px; margin-top: 6px;" disabled></textarea>
                 </div>
                 <div class="container_v">
-                    <button onclick="clearIndexFilenames()" style="background-color: #ceb5a7;">Load default</button>
-                    <button id="uploadIndexFilenamesFiles" onclick="uploadIndexFilenames()" disabled>Load</button>
+                    <div>
+                        <h3>"index" file name</h3>
+                        <input id="input_index_file" type="text" value="index">
+                    </div>
+                    <div>
+                        <h3>"filenames" file name</h3>
+                        <input id="input_filenames_file" type="text" value="filenames">
+                    </div>
+                </div>
+                <div class="container_v">
+                    <button onclick="clearInput()" style="background-color: #ceb5a7">Clear</button>
+                    <button onclick="useInput()" style="background-color: #a8cea7">Use</button>
                 </div>
             </div>
         </div>
         <div class="box">
-            <div class="container_g">
-                <div>
-                    <h3>Enter query word</h3>
-                    <input id="searchInput" type="search" onchange="inputSearch()" accept=".txt">
+            <div class="container_v">
+                <div class="container_g">
+                    <div>
+                        <h3>"index" file name</h3>
+                        <select id="index" name="index" onchange="updateIndexSelectInput()">
+                            {% for option in index_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <h3>"filenames" file name</h3>
+                        <input id="filenames_by_index" type="text" disabled>
+                    </div>
+                    <div class="container_v">
+                        <button onclick="clearIndexFilenames()" style="background-color: #ceb5a7">Clear</button>
+                    </div>
                 </div>
-                <textarea id="searchResult" name="myTextarea" disabled></textarea>
-                <div class="container_v">
-                    <button onclick="clearSearch()" style="background-color: #ceb5a7;">Clear</button>
-                    <button id="searchB" onclick="searchClick()" disabled>Search</button>
+                <hr style="border-bottom: 1px solid #000; width: 100%;">
+                <div class="container_g">
+                    <div>
+                        <h3>Enter query word</h3>
+                        <input id="searchInput" type="search" onchange="inputSearch()" accept=".txt">
+                    </div>
+                    <textarea id="searchResult" name="myTextarea" disabled></textarea>
+                    <div class="container_v">
+                        <button onclick="clearSearch()" style="background-color: #ceb5a7;">Clear</button>
+                        <button id="searchB" onclick="searchClick()" disabled>Search</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="/staticFiles/main.js"></script>
+    
+    <script>
+        let items = `{{ index_options|tojson|safe }}`
+        index_items = JSON.parse(items)
+        items = `{{ dir_options|tojson|safe }}`
+        dir_items = JSON.parse(items)
+    </script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
+
 </html>

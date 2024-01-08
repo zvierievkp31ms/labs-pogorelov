@@ -1,4 +1,47 @@
-function selectFiles () {
+function updateIndexSelectInput() {
+    var selectedValue = document.getElementById("index").value;
+    document.getElementById("filenames_by_index").value = index_items[selectedValue];
+}
+updateIndexSelectInput()
+
+function updateDirSelectInput() {
+    var selectedValue = document.getElementById("dir").value;
+    document.getElementById("dir_files").value = dir_items[selectedValue].join('\n');
+}
+updateDirSelectInput()
+
+function clearInput() {
+    document.getElementById('input_index_file').value = 'index'
+    document.getElementById('input_filenames_file').value = 'filenames'
+}
+
+function useInput() {
+    let index = document.getElementById('input_index_file').value;
+    const index_name = index.trim().length > 0 ? index.trim() : 'index';
+    let filenames = document.getElementById('input_filenames_file').value;
+    const filenames_name = filenames.trim().length > 0 ? filenames.trim() : 'filenames';
+    const dir = document.getElementById("dir").value;
+
+    const data = {
+        index: index_name,
+        filenames: filenames_name,
+        dir: dir
+    }
+    fetch('/input', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+        .then(response => clearInput())
+        .catch(error => console.error('Error:', error));
+}
+
+
+//value index filenames
+
+
+
+function selectFiles() {
     document.getElementById('uploadFiles').disabled = false
     var input = document.getElementById('indexed_file')
     let res = ''
@@ -8,7 +51,7 @@ function selectFiles () {
     document.getElementById('inputFilesTextarea').value = res
 }
 
-function uploadFiles () {
+function uploadFiles() {
     var input = document.getElementById('indexed_file')
     var data = new FormData()
     for (const file of input.files) {
@@ -55,27 +98,27 @@ function uploadIndexFilenames() {
         .catch(error => console.error('Error:', error));
 }
 
-function clearIndexFilenames(){
+function clearIndexFilenames() {
     document.getElementById('index_file').value = ''
     document.getElementById('filenames_file').value = ''
     document.getElementById('uploadIndexFilenamesFiles').disabled = true
 }
 
-function inputSearch () {
-    if(document.getElementById('searchInput').value.trim().length > 0){
+function inputSearch() {
+    if (document.getElementById('searchInput').value.trim().length > 0) {
         document.getElementById('searchB').disabled = false
     }
 }
 
-function searchClick(){
+function searchClick() {
     const text = document.getElementById('searchInput').value.trim();
     fetch('/query?value=' + text, { method: 'GET' })
-    .then(response => response.text())
-    .then(res => document.getElementById('searchResult').value = res)
-    .catch(error => console.error('Error:', error));
+        .then(response => response.text())
+        .then(res => document.getElementById('searchResult').value = res)
+        .catch(error => console.error('Error:', error));
 }
 
-function clearSearch(){
+function clearSearch() {
     document.getElementById('searchInput').value = ''
     document.getElementById('searchResult').value = ''
     document.getElementById('searchB').disabled = true
