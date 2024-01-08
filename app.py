@@ -30,8 +30,8 @@ def input_part():
         dir_name = data['dir']
         files = os.listdir(dir_path + '/' + dir_name)
         files = [ dir_path + '/' + dir_name + '/' + f for f in files]
-        index_file(files, result_dir + index_filename, result_dir + filenames_filename)
-        return 'changes applied', 200
+        index_options = index_file(files, result_dir + index_filename, result_dir + filenames_filename)
+        return index_options, 200
     except Exception as e:
         return f"Error: The application cannot process this request, please check the data entered.", 400
 
@@ -49,14 +49,15 @@ def search():
             return "Error: Not correct filenames file name", 400
         
         word = request.args.get('value')
-        with open(index_filename, 'r', encoding='utf-8') as index_file:
+        with open(result_dir + index_filename, 'r', encoding='utf-8') as index_file:
             index = json.load(index_file)
-        with open(filenames_filename, 'r', encoding='utf-8') as filenames_file:
+        with open(result_dir + filenames_filename, 'r', encoding='utf-8') as filenames_file:
             filenames = json.load(filenames_file)
         return query_index(word, index, filenames)
     except json.JSONDecodeError:
         return f"Error: JSON files index or filenames decoding problem.", 400
-    except:
+    except Exception as e:
+        print(e)
         return f"Error: The application cannot process this request, please check the data entered.", 400
 
 if __name__ == '__main__':

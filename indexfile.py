@@ -53,7 +53,8 @@ def index_file(files, index, filenames):
         json.dump(wordList.toObj(), index_file, indent=2)
 
     with open(filenames, 'w', encoding='utf-8') as filenames_file:
-        json.dump(files, filenames_file, indent=2)
+        json.dump([file.split('/')[1]+'/' + file.split('/')[2] for file in files], filenames_file, indent=2)
+    return res_obj
 
 def key_exist(val, my_dict):
     for key, value in my_dict.items():
