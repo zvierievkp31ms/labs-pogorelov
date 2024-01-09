@@ -11,7 +11,7 @@ Clone the repository: ```git clone https://github.com/zvierievkp31ms/labs-pogore
 
 ## Use app
 
--> Use **development** branch
+-> Use **main** branch
 
 ### Run Without Docker
 1. Install dependencies: ```pip install -U Flask``` **OR** ```pip install -r requirements.txt```
