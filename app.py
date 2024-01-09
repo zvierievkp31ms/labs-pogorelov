@@ -33,7 +33,10 @@ def input_part():
         index_options = index_file(files, result_dir + index_filename, result_dir + filenames_filename)
         return index_options, 200
     except Exception as e:
-        return f"Error: The application cannot process this request, please check the data entered.", 400
+        if e.args[0]  == 'filename exist with other index':
+            return f"Error: Filename |{filenames_filename}| exist with other index, please check the data entered.", 400
+        else:
+            return "Error: The application cannot process this request, please check the data entered.", 400
 
 @app.route('/query', methods=['GET'])
 def search():
@@ -57,7 +60,6 @@ def search():
     except json.JSONDecodeError:
         return f"Error: JSON files index or filenames decoding problem.", 400
     except Exception as e:
-        print(e)
         return f"Error: The application cannot process this request, please check the data entered.", 400
 
 if __name__ == '__main__':
