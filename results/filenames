@@ -1,5 +1,5 @@
 [
-  "input_files/science/file_2.txt",
-  "input_files/science/file_3.txt",
-  "input_files/science/s_file_1.txt"
+  "science/file_2.txt",
+  "science/file_3.txt",
+  "science/s_file_1.txt"
 ]

@@ -15,7 +15,7 @@ function clearInput() {
     document.getElementById('input_filenames_file').value = 'filenames'
 }
 
-function useInput() {
+async function useInput() {
     let index = document.getElementById('input_index_file').value;
     const index_name = index.trim().length > 0 ? index.trim() : 'index';
     let filenames = document.getElementById('input_filenames_file').value;
@@ -27,81 +27,43 @@ function useInput() {
         filenames: filenames_name,
         dir: dir
     }
-    fetch('/input', {
+    const result = await fetch('/input', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     })
-        .then(response => clearInput())
-        .catch(error => console.error('Error:', error));
-}
-
-
-//value index filenames
-
-
-
-function selectFiles() {
-    document.getElementById('uploadFiles').disabled = false
-    var input = document.getElementById('indexed_file')
-    let res = ''
-    for (const file of input.files) {
-        res += file.name + '\n'
+    if(result.status == 400){
+        const old_value = document.getElementById("dir_files").value;
+        document.getElementById("dir_files").value = await result.text();
+        setTimeout(() => {
+            document.getElementById("dir_files").value = old_value
+        }, "5000");
+    } else {
+        const res = await result.json()
+        let select = document.getElementById("index");
+        select.innerHTML = '';
+        for (const [key, value] of Object.entries(res)) {
+            var option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            select.add(option)
+        }
+        select.value = Object.keys(res)[0]
+        index_items = res
+        document.getElementById("filenames_by_index").value = index_items[Object.keys(res)[0]];
+        clearInput()
     }
-    document.getElementById('inputFilesTextarea').value = res
 }
 
-function uploadFiles() {
-    var input = document.getElementById('indexed_file')
-    var data = new FormData()
-    for (const file of input.files) {
-        data.append('file', file, file.name);
-    }
-    fetch('/upload', { method: 'POST', body: data })
-        .then((response) => {
-            if (response.status == 200) {
-                return response.blob();
-            }
-            return
-        })
-        .then(blob => {
-            if (blob) {
-                var file = window.URL.createObjectURL(blob);
-                window.location.assign(file);
-            }
-        }).then(res => clearIndexFilenames())
-        .catch(error => console.error('Error:', error));
+function clearQueryIndexFilenames() {
+    document.getElementById("index").value = Object.keys(index_items)[0]
+    document.getElementById("filenames_by_index").value = index_items[Object.keys(index_items)[0]];
 }
 
-function clearFiles() {
-    document.getElementById('indexed_file').value = ''
-    document.getElementById('inputFilesTextarea').value = ''
-    document.getElementById('uploadFiles').disabled = true
-}
-
-function selectIndexFilenames() {
-    document.getElementById('uploadIndexFilenamesFiles').disabled = false
-}
-
-function uploadIndexFilenames() {
-    var index_input = document.getElementById('index_file')
-    var filenames_input = document.getElementById('filenames_file')
-    var data = new FormData()
-    if (index_input.files[0]) {
-        data.append('file', index_input.files[0], 'index');
-    }
-    if (filenames_input.files[0]) {
-        data.append('file', filenames_input.files[0], 'filenames');
-    }
-    fetch('/index_filenames', { method: 'POST', body: data })
-        .then(response => clearFiles())
-        .catch(error => console.error('Error:', error));
-}
-
-function clearIndexFilenames() {
-    document.getElementById('index_file').value = ''
-    document.getElementById('filenames_file').value = ''
-    document.getElementById('uploadIndexFilenamesFiles').disabled = true
+function clearSearch() {
+    document.getElementById('searchInput').value = ''
+    document.getElementById('searchResult').value = ''
+    document.getElementById('searchB').disabled = true
 }
 
 function inputSearch() {
@@ -112,14 +74,10 @@ function inputSearch() {
 
 function searchClick() {
     const text = document.getElementById('searchInput').value.trim();
-    fetch('/query?value=' + text, { method: 'GET' })
+    const index = document.getElementById("index").value.trim();
+    const filenames = document.getElementById("filenames_by_index").value.trim();
+    fetch(`/query?value=${text}&index=${index}&filenames=${filenames}`, { method: 'GET' })
         .then(response => response.text())
         .then(res => document.getElementById('searchResult').value = res)
         .catch(error => console.error('Error:', error));
-}
-
-function clearSearch() {
-    document.getElementById('searchInput').value = ''
-    document.getElementById('searchResult').value = ''
-    document.getElementById('searchB').disabled = true
 }
