@@ -3,7 +3,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 
 import unittest
-from indexfile import index_file, remove_punctuation
+from indexfile import remove_punctuation
 
 class TestPunctuation(unittest.TestCase):    
     def test_remove_punctuation_end(self):
