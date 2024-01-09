@@ -22,26 +22,29 @@ def work_with_words(k, line, linkedL):
 def index_file(files, index, filenames):
     wordList = LinkedList(len(files))
     for k, v in enumerate(files):
-        file = open(v, 'r')
-        count = 0
-        while True:
-            count += 1
-            line = file.readline()
-            work_with_words(k, line, wordList)
-            if not line:
-                break
-        file.close()
+        try:
+            file = open(v, 'r')
+            count = 0
+            while True:
+                count += 1
+                line = file.readline()
+                work_with_words(k, line, wordList)
+                if not line:
+                    break
+            file.close()
+        except:
+            continue
 
     res_obj = {}
     with open('result.json', 'r', encoding='utf-8') as result_file:
         res_obj = json.load(result_file)
 
-    if key_exist(filenames.split('/')[1], res_obj): #filename exist
+    if key_exist(filenames.split('/')[1], res_obj):
         key = [i for i in res_obj if res_obj[i]==filenames.split('/')[1]][0]
         if(key != index.split('/')[1]):
             raise Exception('filename exist with other index')
     else:
-        if index.split('/')[1] in res_obj: #index exist with other filename
+        if index.split('/')[1] in res_obj:
             os.remove(filenames.split('/')[0] + '/' + res_obj.get(index.split('/')[1]))
 
     res_obj[index.split('/')[1]] = filenames.split('/')[1]
