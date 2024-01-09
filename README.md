@@ -1,10 +1,5 @@
 # Client-server
 
-## Prerequisites
-
-- Python installed
-- Docker installed
-
 ## Getting Started
 
 Clone the repository: ```git clone https://github.com/zvierievkp31ms/labs-pogorelov.git```
